@@ -20,8 +20,8 @@ require_once 'vendor/autoload.php';
      ['host' => '127.0.0.3'],
      ['host' => '127.0.0.4'],
  ]);
- $cluster->connect('smpp')->then(function( use($cluster)){
-     print "Connected to cluster keyspace smpp\n";
+ $cluster->connect('test')->then(function() use($cluster){
+     print "Connected to cluster keyspace test\n";
      $uuid = '00000000-0000-0000-0000-000000000000';
      return $cluster->query('
         SELECT *

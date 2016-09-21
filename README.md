@@ -24,8 +24,7 @@ require_once 'vendor/autoload.php';
         'id' => new \ReactCassandra\Type\UUID($uuid),
      ]);
  })->then(function($response){
-     print "Query successfull, got "
-        . count($response->resuslts) . " rows:\n";
+     print "Query successfull, got " . count($response->results) . " rows:\n";
      foreach($response as $row){
         var_dump($row);
      }

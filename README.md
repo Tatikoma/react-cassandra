@@ -1,5 +1,12 @@
 # ReactCassandra
-Performant pure-PHP CQL (Cassandara) async (ReactPHP) library
+Performant pure-PHP CQL v4 (Cassandara) async (ReactPHP) library.
+
+Library is not ready for production and much of functional is not implemented yet.
+
+Installation
+```
+php composer.phar require tatikoma/react-cassandra:dev-master
+```
 
 Example usage:
 ```php

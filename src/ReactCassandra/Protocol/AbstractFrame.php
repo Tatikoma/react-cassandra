@@ -142,48 +142,6 @@ abstract class AbstractFrame
     }
 
     /**
-     * @param array $stringList Associative list of strings
-     * @return string
-     */
-    public function writeStringMap($stringList = [])
-    {
-        $pdu = pack('n', count($stringList));
-        foreach ($stringList as $k => $v) {
-            $pdu .= $this->writeString($k) . $this->writeString($v);
-        }
-        return $pdu;
-    }
-
-    /**
-     * @param string $string String
-     * @return string
-     */
-    public function writeString($string = '')
-    {
-        return $this->writeShort(strlen($string)) . $string;
-    }
-
-    public function writeShort($int = 0)
-    {
-        return pack('n', $int);
-    }
-
-    public function writeLongString($string = '')
-    {
-        return $this->writeInt(strlen($string)) . $string;
-    }
-
-    public function writeInt($int = 0)
-    {
-        return pack('N', $int);
-    }
-
-    public function writeByte($int = 0)
-    {
-        return pack('C', $int);
-    }
-
-    /**
      * @param string $frame Binary frame without frame header
      * @return string Binary frame with frame header
      * @throws \ReactCassandra\CassandraException

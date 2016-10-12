@@ -35,7 +35,7 @@ class StartupFrame extends AbstractFrame
         if (!is_null($this->compression)) {
             $params['COMPRESSION'] = $this->compression;
         }
-        $packet = parent::writeStringMap($params);
+        $packet = FrameHelper::writeStringMap($params);
         $packet = parent::writeHeader($packet);
 
         return $packet;

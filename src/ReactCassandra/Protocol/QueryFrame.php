@@ -32,29 +32,29 @@ class QueryFrame extends AbstractFrame
     {
         $flags = \ReactCassandra\Constants::QUERY_FLAG_VALUES | \ReactCassandra\Constants::QUERY_FLAG_WITH_NAMES_FOR_VALUES;
 
-        $packet = parent::writeLongString($this->cql);
-        $packet .= parent::writeShort($this->consistency);
-        $packet .= parent::writeByte($flags);
-        $packet .= parent::writeShort(count($this->params));
+        $packet = FrameHelper::writeLongString($this->cql);
+        $packet .= FrameHelper::writeShort($this->consistency);
+        $packet .= FrameHelper::writeByte($flags);
+        $packet .= FrameHelper::writeShort(count($this->params));
         foreach ($this->params as $k => $v) {
             if (is_object($v)) {
                 $v = (string)$v;
             }
-            $packet .= parent::writeString($k);
+            $packet .= FrameHelper::writeString($k);
             switch (true) {
                 case is_null($v):
-                    $packet .= parent::writeInt(-1);
+                    $packet .= FrameHelper::writeInt(-1);
                     break;
                 case !isset($v):
                     // this 'll never happens, but we have some code for this
-                    $packet .= parent::writeInt(-2);
+                    $packet .= FrameHelper::writeInt(-2);
                     break;
                 case is_int($v):
-                    $v = parent::writeInt($v);
-                    $packet .= parent::writeInt(strlen($v)) . $v;
+                    $v = FrameHelper::writeInt($v);
+                    $packet .= FrameHelper::writeInt(strlen($v)) . $v;
                     break;
                 default:
-                    $packet .= parent::writeInt(strlen($v)) . $v;
+                    $packet .= FrameHelper::writeInt(strlen($v)) . $v;
                     break;
             }
         }

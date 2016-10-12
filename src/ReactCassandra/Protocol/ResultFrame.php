@@ -26,6 +26,10 @@ class ResultFrame extends AbstractFrame implements \Iterator
      */
     public $results = [];
 
+    public $change_type;
+    public $change_target;
+    public $change_options;
+
     /**
      * @var int Iterator position
      */
@@ -132,7 +136,42 @@ class ResultFrame extends AbstractFrame implements \Iterator
                 throw new \ReactCassandra\CassandraException('Not implemented yet');
                 break;
             case \ReactCassandra\Constants::RESULT_SCHEMA_CHANGE:
-                throw new \ReactCassandra\CassandraException('Not implemented yet');
+                $this->change_type = $this->readString($bytes, $position);
+                $this->change_target = $this->readString($bytes, $position);
+                switch ($this->change_target) {
+                    case 'KEYSPACE':
+                        $this->change_options = [
+                            'keyspace' => $this->readString($bytes, $position),
+                        ];
+                        break;
+                    case 'TABLE':
+                        $this->change_options = [
+                            'keyspace' => $this->readString($bytes, $position),
+                            'table' => $this->readString($bytes, $position),
+                        ];
+                        break;
+                    case 'TYPE':
+                        $this->change_options = [
+                            'keyspace' => $this->readString($bytes, $position),
+                            'type' => $this->readString($bytes, $position),
+                        ];
+                        break;
+                    case 'FUNCTION':
+                    case 'AGGREGATE':
+                        $this->change_options = [
+                            'keyspace' => $this->readString($bytes, $position),
+                            'function' => $this->readString($bytes, $position),
+                            'arguments' => [],
+                        ];
+                        $numberOfArguments = $this->readShort($bytes, $position);
+                        for ($i = 0; $i < $numberOfArguments; $i++) {
+                            $this->change_options['arguments'][] = $this->readString($bytes, $position);
+                        }
+                        break;
+                    default:
+                        throw new \ReactCassandra\CassandraException('Not implemented yet');
+                        break;
+                }
                 break;
             default:
                 throw new \ReactCassandra\CassandraException(strtr('Got unknown result kind :kind', [

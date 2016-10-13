@@ -4,13 +4,14 @@ namespace ReactCassandra\Type;
 class Collection
 {
 
-    public $value;
+    public $value = [];
 
-    public function __construct($value = null)
+    public function __construct($value = [])
     {
-        if (!is_null($value)) {
-            $this->value = $value;
+        if (!is_array($this->value)) {
+            throw new \ReactCassandra\Exception('Passed argument is not an array to Cassandra Collection');
         }
+        $this->value = $value;
     }
 
     public static function parse($binary)

@@ -46,13 +46,13 @@ class ResultFrame extends AbstractFrame implements \Iterator
                 $this->flags = $this->readInt($bytes, $position);
                 if (!$this->flags & \ReactCassandra\Constants::RESULT_FLAG_GLOBAL_TABLE_SPEC) {
                     // Flag is NOT set
-                    throw new \ReactCassandra\CassandraException('Not implemented yet');
+                    throw new \ReactCassandra\Exception('Not implemented yet');
                 }
                 if ($this->flags & \ReactCassandra\Constants::RESULT_FLAG_HAS_MORE_PAGES) {
-                    throw new \ReactCassandra\CassandraException('Not implemented yet');
+                    throw new \ReactCassandra\Exception('Not implemented yet');
                 }
                 if ($this->flags & \ReactCassandra\Constants::RESULT_FLAG_NO_METADATA) {
-                    throw new \ReactCassandra\CassandraException('Not implemented yet');
+                    throw new \ReactCassandra\Exception('Not implemented yet');
                 }
                 $columnsCount = $this->readInt($bytes, $position);
                 $keyspace = $this->readString($bytes, $position);;
@@ -93,7 +93,7 @@ class ResultFrame extends AbstractFrame implements \Iterator
                                 break;
                             case \ReactCassandra\Constants::FIELD_TYPE_INET:
                                 if (strlen($value) != 4) {
-                                    throw new \ReactCassandra\CassandraException('Only inet v4 implemented yet');
+                                    throw new \ReactCassandra\Exception('Only inet v4 implemented yet');
                                 }
                                 $value = \ReactCassandra\Type\Inet::parse($value);
                                 break;
@@ -114,12 +114,12 @@ class ResultFrame extends AbstractFrame implements \Iterator
                             case \ReactCassandra\Constants::FIELD_TYPE_SET:
                             case \ReactCassandra\Constants::FIELD_TYPE_UDT:
                             case \ReactCassandra\Constants::FIELD_TYPE_TUPLE:
-                                throw new \ReactCassandra\CassandraException(strtr('Field type :type is not implemented yet', [
+                                throw new \ReactCassandra\Exception(strtr('Field type :type is not implemented yet', [
                                     ':type' => $schema[$j]['type'],
                                 ]));
                                 break;
                             default:
-                                throw new \ReactCassandra\CassandraException(strtr('Got unknown field type :type', [
+                                throw new \ReactCassandra\Exception(strtr('Got unknown field type :type', [
                                     ':type' => $schema[$j]['type'],
                                 ]));
                                 break;
@@ -133,7 +133,7 @@ class ResultFrame extends AbstractFrame implements \Iterator
                 $this->keyspace = $this->readString($bytes, $position);
                 break;
             case \ReactCassandra\Constants::RESULT_PREPARED:
-                throw new \ReactCassandra\CassandraException('Not implemented yet');
+                throw new \ReactCassandra\Exception('Not implemented yet');
                 break;
             case \ReactCassandra\Constants::RESULT_SCHEMA_CHANGE:
                 $this->change_type = $this->readString($bytes, $position);
@@ -169,12 +169,12 @@ class ResultFrame extends AbstractFrame implements \Iterator
                         }
                         break;
                     default:
-                        throw new \ReactCassandra\CassandraException('Not implemented yet');
+                        throw new \ReactCassandra\Exception('Not implemented yet');
                         break;
                 }
                 break;
             default:
-                throw new \ReactCassandra\CassandraException(strtr('Got unknown result kind :kind', [
+                throw new \ReactCassandra\Exception(strtr('Got unknown result kind :kind', [
                     ':kind' => $this->kind,
                 ]));
                 break;

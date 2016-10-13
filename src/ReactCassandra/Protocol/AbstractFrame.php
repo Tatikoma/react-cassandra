@@ -42,19 +42,19 @@ abstract class AbstractFrame
         }
 
         if ($header['flags'] & \ReactCassandra\Constants::FRAME_FLAG_COMPRESSION) {
-            throw new \ReactCassandra\CassandraException('Compression flag not implemented yet');
+            throw new \ReactCassandra\Exception('Compression flag not implemented yet');
         }
         if ($header['flags'] & \ReactCassandra\Constants::FRAME_FLAG_TRACING) {
-            throw new \ReactCassandra\CassandraException('Tracing flag not implemented yet');
+            throw new \ReactCassandra\Exception('Tracing flag not implemented yet');
         }
         if ($header['flags'] & \ReactCassandra\Constants::FRAME_FLAG_PAYLOAD) {
-            throw new \ReactCassandra\CassandraException('Payload flag not implemented yet');
+            throw new \ReactCassandra\Exception('Payload flag not implemented yet');
         }
         if ($header['flags'] & \ReactCassandra\Constants::FRAME_FLAG_WARNING) {
-            throw new \ReactCassandra\CassandraException('Warning flag not implemented yet');
+            throw new \ReactCassandra\Exception('Warning flag not implemented yet');
         }
         if ($header['length'] > \ReactCassandra\Constants::FRAME_SIZE_LIMIT) {
-            throw new \ReactCassandra\CassandraException(strtr('Got too large frame. Frame size :actual, maximum size is :expected', [
+            throw new \ReactCassandra\Exception(strtr('Got too large frame. Frame size :actual, maximum size is :expected', [
                 ':actual' => $header['length'],
                 ':expected' => \ReactCassandra\Constants::FRAME_SIZE_LIMIT,
             ]));
@@ -113,7 +113,7 @@ abstract class AbstractFrame
                 break;
 
             default:
-                throw new \ReactCassandra\CassandraException(strtr('Got unknown frame opcode: :opcode', [
+                throw new \ReactCassandra\Exception(strtr('Got unknown frame opcode: :opcode', [
                     ':opcode' => $header['opcode'],
                 ]));
                 break;
@@ -144,12 +144,12 @@ abstract class AbstractFrame
     /**
      * @param string $frame Binary frame without frame header
      * @return string Binary frame with frame header
-     * @throws \ReactCassandra\CassandraException
+     * @throws \ReactCassandra\Exception
      */
     public function writeHeader($frame = '')
     {
         if (is_null($this->stream_id)) {
-            throw new \ReactCassandra\CassandraException('Cannot write frame header for frame without stream id');
+            throw new \ReactCassandra\Exception('Cannot write frame header for frame without stream id');
         }
         $frame = pack('CCnCN',
                 $this->frame_direction | $this->protocol_version,
@@ -198,10 +198,10 @@ abstract class AbstractFrame
 
     /**
      * @return string
-     * @throws \ReactCassandra\CassandraException
+     * @throws \ReactCassandra\Exception
      */
     public function toBytes()
     {
-        throw new \ReactCassandra\CassandraException('Cannot call toBytes method of Abstract Frame');
+        throw new \ReactCassandra\Exception('Cannot call toBytes method of Abstract Frame');
     }
 }

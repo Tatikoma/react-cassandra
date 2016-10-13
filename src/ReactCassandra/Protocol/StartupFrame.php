@@ -14,7 +14,7 @@ class StartupFrame extends AbstractFrame
 
     public function fromBytes($bytes = "")
     {
-        throw new \ReactCassandra\CassandraException('Not implemented yet');
+        throw new \ReactCassandra\Exception('Not implemented yet');
     }
 
     public function fromParams($params = [])

@@ -79,7 +79,7 @@ abstract class AbstractClient extends \Evenement\EventEmitter
     public function connect()
     {
         if ($this->status != Constants::CLIENT_CLOSED) {
-            throw new \ReactCassandra\CassandraException('Cannot connect client when connection is not closed');
+            throw new \ReactCassandra\Exception('Cannot connect client when connection is not closed');
         }
 
         $this->deferredConnect = new \React\Promise\Deferred();
@@ -94,7 +94,7 @@ abstract class AbstractClient extends \Evenement\EventEmitter
         $this->status = Constants::CLIENT_CONNECTING;
         $socket = @stream_socket_client($connectionString, $errno, $errstr, (float)$this->options["timeout"], $flags);
         if ($socket === false) {
-            throw new CassandraException(strtr('Cannot create socket connection, code :code error :error', [
+            throw new Exception(strtr('Cannot create socket connection, code :code error :error', [
                 ':code' => $errno,
                 ':error' => $errstr
             ]));
@@ -123,7 +123,7 @@ abstract class AbstractClient extends \Evenement\EventEmitter
             $this->streamId = 0;
         }
         if (isset($this->deferredPackets[$this->streamId])) {
-            throw new CassandraException('Cannot get stream id, too many deferred packets');
+            throw new Exception('Cannot get stream id, too many deferred packets');
         }
         return $this->streamId++;
     }
@@ -167,7 +167,7 @@ abstract class AbstractClient extends \Evenement\EventEmitter
         switch (true) {
             case $frame instanceof \ReactCassandra\Protocol\ErrorFrame:
                 if (isset($this->deferredPackets[$frame->stream_id])) {
-                    $this->deferredPackets[$frame->stream_id]->reject(new CassandraException(strtr('Error code :code, :error', [
+                    $this->deferredPackets[$frame->stream_id]->reject(new Exception(strtr('Error code :code, :error', [
                         ':code' => $frame->errorCode,
                         ':error' => $frame->errorString,
                     ])));
@@ -207,7 +207,7 @@ abstract class AbstractClient extends \Evenement\EventEmitter
     public function close()
     {
         if ($this->status != Constants::CLIENT_CONNECTED) {
-            return \React\Promise\reject(new CassandraException('Cannot close connection while client is not connected'));
+            return \React\Promise\reject(new Exception('Cannot close connection while client is not connected'));
         }
 
         $this->deferredClose = new \React\Promise\Deferred();
@@ -219,7 +219,7 @@ abstract class AbstractClient extends \Evenement\EventEmitter
         if ($this->status == Constants::CLIENT_CLOSED) {
             return \React\Promise\resolve($this);
         } else {
-            return \React\Promise\reject(new CassandraException('Cannot close connection'));
+            return \React\Promise\reject(new Exception('Cannot close connection'));
         }
     }
 
@@ -236,7 +236,7 @@ abstract class AbstractClient extends \Evenement\EventEmitter
     public function onClose()
     {
         if ($this->status != Constants::CLIENT_CLOSING) {
-            throw new \ReactCassandra\CassandraException('Cassandra socket connection unexpectedly closed');
+            throw new \ReactCassandra\Exception('Cassandra socket connection unexpectedly closed');
         }
         $this->stream = null;
         $this->status = Constants::CLIENT_CLOSED;
@@ -245,11 +245,11 @@ abstract class AbstractClient extends \Evenement\EventEmitter
             $this->deferredClose = null;
         }
         if ($this->deferredConnect instanceof \React\Promise\Deferred) {
-            $this->deferredConnect->reject(new CassandraException('Connection closed'));
+            $this->deferredConnect->reject(new Exception('Connection closed'));
             $this->deferredConnect = null;
         }
         foreach ($this->deferredPackets as $deferred) {
-            $deferred->reject(new CassandraException('Connection closed'));
+            $deferred->reject(new Exception('Connection closed'));
         }
         $this->deferredPackets = [];
         $this->emit('close', [$this]);

@@ -96,12 +96,12 @@ class Cluster
 
     /**
      * @return \ReactCassandra\Async\Client
-     * @throws \ReactCassandra\CassandraException
+     * @throws \ReactCassandra\Exception
      */
     public function getConnectedClient()
     {
         if (count($this->connected) == 0) {
-            throw new \ReactCassandra\CassandraException('No one server in cluster are connected');
+            throw new \ReactCassandra\Exception('No one server in cluster are connected');
         }
         return $this->connected[mt_rand(0, count($this->connected) - 1)];
     }

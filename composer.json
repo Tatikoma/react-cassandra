@@ -5,7 +5,7 @@
     "keywords": [
         "cassandra",
         "cql",
-        "ReactCassandra",
+        "React\\Cassandra",
         "react",
         "react-php",
         "reactphp"
@@ -27,12 +27,12 @@
     },
     "autoload": {
         "psr-4": {
-            "ReactCassandra\\": [
-                "src/ReactCassandra/"
+            "React\\Cassandra\\": [
+                "src/react/cassandra/"
             ]
         },
         "classmap": [
-            "src/ReactCassandra/"
+            "src/react/cassandra/"
         ]
     }
 }

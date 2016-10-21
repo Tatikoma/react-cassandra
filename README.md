@@ -1,4 +1,4 @@
-# ReactCassandra
+# React\Cassandra
 Performant pure-PHP CQL v4 (Cassandara) async (ReactPHP) library.
 
 Library is not ready for production and much of functional is not implemented yet.
@@ -14,7 +14,7 @@ require_once 'vendor/autoload.php';
      
  $loop = React\EventLoop\Factory::create();
  
- $cluster = new \ReactCassandra\Async\Cluster($loop, [
+ $cluster = new \React\Cassandra\Async\Cluster($loop, [
      ['host' => '127.0.0.1'],
      ['host' => '127.0.0.2'],
      ['host' => '127.0.0.3'],
@@ -28,7 +28,7 @@ require_once 'vendor/autoload.php';
         FROM example
         WHERE id = :id
      ',[
-        'id' => new \ReactCassandra\Type\UUID($uuid),
+        'id' => new \React\Cassandra\Type\UUID($uuid),
      ]);
  })->then(function($response){
      print "Query successfull, got " . count($response->results) . " rows:\n";

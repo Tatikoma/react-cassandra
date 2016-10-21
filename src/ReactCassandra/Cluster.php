@@ -2,35 +2,33 @@
 
 namespace ReactCassandra;
 
-class Cluster
+class Cluster extends \ReactCassandra\Async\Cluster
 {
-    /**
-     * @var array List of Cassandra cluster server IP address to connect
-     */
-    public $servers = ['127.0.0.1'];
-    /**
-     * @var \React\EventLoop\LoopInterface
-     */
-    public $eventLoop = null;
-    /**
-     * @var array Cassandra PHP client instances
-     */
-    public $clients = [];
 
-    public function __construct(\React\EventLoop\LoopInterface $eventLoop, $options)
+    /**
+     * @param string $keyspace
+     * @return mixed
+     */
+    public function connect($keyspace = '')
     {
-        $this->eventLoop = $eventLoop;
-        if (isset($options['servers'])) {
-            $this->servers = $options['servers'];
-        }
-
-        $this->init();
+        return \Clue\React\Block\await(parent::connect($keyspace), $this->loop);
     }
 
-    public function init()
+    /**
+     * @param string $cql
+     * @param array $params
+     * @param int $consistency
+     * @return \ReactCassandra\Protocol\ResultFrame
+     */
+    public function query($cql, $params = [], $consistency = \ReactCassandra\Constants::CONSISTENCY_ONE)
     {
-        foreach ($this->servers as $k => $server) {
+        return \Clue\React\Block\await(parent::query($cql, $params, $consistency), $this->loop);
+    }
 
+    public function close()
+    {
+        foreach ($this->connected as $client) {
+            \Clue\React\Block\await($client->close(), $this->loop);
         }
     }
 }

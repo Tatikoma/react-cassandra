@@ -22,7 +22,8 @@
         "react/event-loop": "~0.4",
         "react/promise": "~2.2",
         "react/stream": "^0.4.4",
-        "evenement/evenement": "^2.0"
+      "evenement/evenement": "^2.0",
+      "clue/block-react": "^1.1"
     },
     "autoload": {
         "psr-4": {

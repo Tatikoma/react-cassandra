@@ -8,11 +8,11 @@ class Client extends AbstractClient
      */
     protected $eventLoop;
 
-    public function __construct(\React\EventLoop\LoopInterface $eventLoop, array $options)
+    public function __construct(array $options)
     {
-        $this->eventLoop = $eventLoop;
+        $this->eventLoop = \React\EventLoop\Factory::create();
         $options['async'] = false;
-        parent::__construct($eventLoop, $options);
+        parent::__construct($this->eventLoop, $options);
     }
 
     public function connect()

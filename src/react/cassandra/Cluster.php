@@ -5,6 +5,12 @@ namespace React\Cassandra;
 class Cluster extends \React\Cassandra\Async\Cluster
 {
 
+    public function __construct($serverOptions)
+    {
+        $loop = \React\EventLoop\Factory::create();
+        parent::__construct($loop, $serverOptions);
+    }
+
     /**
      * @param string $keyspace
      * @return mixed

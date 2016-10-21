@@ -44,10 +44,8 @@ Example usage (async mode):
 Example usage (sync mode):
 ```php
  require_once 'vendor/autoload.php';
-     
- $loop = React\EventLoop\Factory::create();
- 
- $cluster = new \React\Cassandra\Cluster($loop, [
+      
+ $cluster = new \React\Cassandra\Cluster([
      ['host' => '127.0.0.1'],
      ['host' => '127.0.0.2'],
      ['host' => '127.0.0.3'],

@@ -8,9 +8,9 @@ Installation
 php composer.phar require tatikoma/react-cassandra:dev-master
 ```
 
-Example usage:
+Example usage (async mode):
 ```php
-require_once 'vendor/autoload.php';
+ require_once 'vendor/autoload.php';
      
  $loop = React\EventLoop\Factory::create();
  
@@ -38,4 +38,32 @@ require_once 'vendor/autoload.php';
  });
  
  $loop->run();
+```
+
+
+Example usage (sync mode):
+```php
+ require_once 'vendor/autoload.php';
+     
+ $loop = React\EventLoop\Factory::create();
+ 
+ $cluster = new \React\Cassandra\Cluster($loop, [
+     ['host' => '127.0.0.1'],
+     ['host' => '127.0.0.2'],
+     ['host' => '127.0.0.3'],
+     ['host' => '127.0.0.4'],
+ ]);
+ $cluster->connect('test');
+ $uuid = '00000000-0000-0000-0000-000000000000';
+ $response = $cluster->query('
+     SELECT *
+     FROM example
+     WHERE id = :id
+     ',[
+        'id' => new \React\Cassandra\Type\UUID($uuid),
+ ]);
+ print "got " . count($response->results) . " rows:\n"; 
+ foreach($response as $row){
+    var_dump($row);
+ }
 ```

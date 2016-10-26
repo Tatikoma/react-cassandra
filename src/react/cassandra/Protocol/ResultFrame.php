@@ -61,9 +61,16 @@ class ResultFrame extends AbstractFrame implements \Iterator
                 for ($i = 0; $i < $columnsCount; $i++) {
                     $fieldName = $this->readString($bytes, $position);
                     $fieldType = $this->readShort($bytes, $position);
+                    $subType = null;
+                    switch ($fieldType) {
+                        case \React\Cassandra\Constants::FIELD_TYPE_LIST:
+                            $subType = $this->readShort($bytes, $position);
+                            break;
+                    }
                     $schema[$i] = [
                         'name' => $fieldName,
                         'type' => $fieldType,
+                        'subtype' => $subType,
                     ];
                 }
                 $rowsCount = $this->readInt($bytes, $position);
@@ -97,6 +104,24 @@ class ResultFrame extends AbstractFrame implements \Iterator
                                 }
                                 $value = \React\Cassandra\Type\Inet::parse($value);
                                 break;
+                            case \React\Cassandra\Constants::FIELD_TYPE_LIST:
+                                switch ($schema[$j]['subtype']) {
+                                    case \React\Cassandra\Constants::FIELD_TYPE_INT:
+                                        // @todo create & use \Type\Integer for parsing
+                                        $result = [];
+                                        $fieldPosition = 0;
+                                        $numberOfElements = $this->readInt($value, $fieldPosition);
+                                        for ($i = 0; $i < $numberOfElements; $i++) {
+                                            $item = unpack('Nint', $this->readBytes($value, $fieldPosition));
+                                            $result[] = $item['int'];
+                                        }
+                                        $value = $result;
+                                        break;
+                                    default:
+                                        throw new \React\Cassandra\Exception('Only integer field list implemented yet');
+                                        break;
+                                }
+                                break;
                             case \React\Cassandra\Constants::FIELD_TYPE_ASCII:
                             case \React\Cassandra\Constants::FIELD_TYPE_BOOLEAN:
                             case \React\Cassandra\Constants::FIELD_TYPE_COUNTER:
@@ -109,7 +134,6 @@ class ResultFrame extends AbstractFrame implements \Iterator
                             case \React\Cassandra\Constants::FIELD_TYPE_TIME:
                             case \React\Cassandra\Constants::FIELD_TYPE_SMALLINT:
                             case \React\Cassandra\Constants::FIELD_TYPE_TINYINT:
-                            case \React\Cassandra\Constants::FIELD_TYPE_LIST:
                             case \React\Cassandra\Constants::FIELD_TYPE_MAP:
                             case \React\Cassandra\Constants::FIELD_TYPE_SET:
                             case \React\Cassandra\Constants::FIELD_TYPE_UDT:

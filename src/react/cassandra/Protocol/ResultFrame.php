@@ -112,7 +112,7 @@ class ResultFrame extends AbstractFrame implements \Iterator
                                             $result = [];
                                             $fieldPosition = 0;
                                             $numberOfElements = $this->readInt($value, $fieldPosition);
-                                            for ($i = 0; $i < $numberOfElements; $i++) {
+                                            for ($elementNum = 0; $elementNum < $numberOfElements; $elementNum++) {
                                                 $item = unpack('Nint', $this->readBytes($value, $fieldPosition));
                                                 $result[] = $item['int'];
                                             }

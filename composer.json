@@ -1,7 +1,7 @@
 {
     "name": "tatikoma/react-cassandra",
     "type": "library",
-    "description": "Performant pure-PHP CQL (Cassandara) async (ReactPHP) library",
+    "description": "Performant pure-PHP CQL (Cassandra) async (ReactPHP) library",
     "keywords": [
         "cassandra",
         "cql",

@@ -1,5 +1,5 @@
 # React\Cassandra
-Performant pure-PHP CQL v4 (Cassandara) async (ReactPHP) library.
+Performant pure-PHP CQL v4 (Cassandra) async (ReactPHP) library.
 
 Library is not ready for production and much of functional is not implemented yet.
 

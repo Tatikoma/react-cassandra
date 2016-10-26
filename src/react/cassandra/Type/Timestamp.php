@@ -27,7 +27,7 @@ class Timestamp
 
     public static function binary($value)
     {
-        $value = floor($value * 1000);
+        $value = (int)floor($value * 1000);
         return pack('NN', $value >> 32, $value & 0xFFFFFFFF);
     }
 }

@@ -105,21 +105,25 @@ class ResultFrame extends AbstractFrame implements \Iterator
                                 $value = \React\Cassandra\Type\Inet::parse($value);
                                 break;
                             case \React\Cassandra\Constants::FIELD_TYPE_LIST:
-                                switch ($schema[$j]['subtype']) {
-                                    case \React\Cassandra\Constants::FIELD_TYPE_INT:
-                                        // @todo create & use \Type\Integer for parsing
-                                        $result = [];
-                                        $fieldPosition = 0;
-                                        $numberOfElements = $this->readInt($value, $fieldPosition);
-                                        for ($i = 0; $i < $numberOfElements; $i++) {
-                                            $item = unpack('Nint', $this->readBytes($value, $fieldPosition));
-                                            $result[] = $item['int'];
-                                        }
-                                        $value = $result;
-                                        break;
-                                    default:
-                                        throw new \React\Cassandra\Exception('Only integer field list implemented yet');
-                                        break;
+                                if ($value != "") {
+                                    switch ($schema[$j]['subtype']) {
+                                        case \React\Cassandra\Constants::FIELD_TYPE_INT:
+                                            // @todo create & use \Type\Integer for parsing
+                                            $result = [];
+                                            $fieldPosition = 0;
+                                            $numberOfElements = $this->readInt($value, $fieldPosition);
+                                            for ($i = 0; $i < $numberOfElements; $i++) {
+                                                $item = unpack('Nint', $this->readBytes($value, $fieldPosition));
+                                                $result[] = $item['int'];
+                                            }
+                                            $value = $result;
+                                            break;
+                                        default:
+                                            throw new \React\Cassandra\Exception('Only integer field list implemented yet');
+                                            break;
+                                    }
+                                } else {
+                                    $value = [];
                                 }
                                 break;
                             case \React\Cassandra\Constants::FIELD_TYPE_ASCII:

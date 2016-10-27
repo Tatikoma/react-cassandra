@@ -1,5 +1,5 @@
 <?php
-namespace React\Cassandra\Protocol;
+namespace Tatikoma\React\Cassandra\Protocol;
 
 class StartupFrame extends AbstractFrame
 {
@@ -14,12 +14,12 @@ class StartupFrame extends AbstractFrame
 
     public function fromBytes($bytes = "")
     {
-        throw new \React\Cassandra\Exception('Not implemented yet');
+        throw new \Tatikoma\React\Cassandra\Exception('Not implemented yet');
     }
 
     public function fromParams($params = [])
     {
-        $this->opcode = \React\Cassandra\Constants::OPCODE_STARTUP;
+        $this->opcode = \Tatikoma\React\Cassandra\Constants::OPCODE_STARTUP;
         if (isset($params['cql_version'])) {
             $this->cql_version = $params['cql_version'];
         }

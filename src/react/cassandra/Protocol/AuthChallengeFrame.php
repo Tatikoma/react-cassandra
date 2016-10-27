@@ -1,11 +1,11 @@
 <?php
-namespace React\Cassandra\Protocol;
+namespace Tatikoma\React\Cassandra\Protocol;
 
 class AuthChallengeFrame extends AbstractFrame
 {
 
     public function fromBytes($bytes = "")
     {
-        throw new \React\Cassandra\Exception('Not implemented yet');
+        throw new \Tatikoma\React\Cassandra\Exception('Not implemented yet');
     }
 }

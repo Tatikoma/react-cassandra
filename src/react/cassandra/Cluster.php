@@ -1,8 +1,8 @@
 <?php
 
-namespace React\Cassandra;
+namespace Tatikoma\React\Cassandra;
 
-class Cluster extends \React\Cassandra\Async\Cluster
+class Cluster extends \Tatikoma\React\Cassandra\Async\Cluster
 {
 
     public function __construct($serverOptions)
@@ -24,9 +24,9 @@ class Cluster extends \React\Cassandra\Async\Cluster
      * @param string $cql
      * @param array $params
      * @param int $consistency
-     * @return \React\Cassandra\Protocol\ResultFrame
+     * @return \Tatikoma\React\Cassandra\Protocol\ResultFrame
      */
-    public function query($cql, $params = [], $consistency = \React\Cassandra\Constants::CONSISTENCY_ONE)
+    public function query($cql, $params = [], $consistency = \Tatikoma\React\Cassandra\Constants::CONSISTENCY_ONE)
     {
         return \Clue\React\Block\await(parent::query($cql, $params, $consistency), $this->loop);
     }

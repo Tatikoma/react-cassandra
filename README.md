@@ -1,4 +1,4 @@
-# React\Cassandra
+# Tatikoma\React\Cassandra
 Performant pure-PHP CQL v4 (Cassandra) async (ReactPHP) library.
 
 Library is not ready for production and much of functional is not implemented yet.
@@ -14,7 +14,7 @@ Example usage (async mode):
      
  $loop = React\EventLoop\Factory::create();
  
- $cluster = new \React\Cassandra\Async\Cluster($loop, [
+ $cluster = new \Tatikoma\React\Cassandra\Async\Cluster($loop, [
      ['host' => '127.0.0.1'],
      ['host' => '127.0.0.2'],
      ['host' => '127.0.0.3'],
@@ -28,7 +28,7 @@ Example usage (async mode):
         FROM example
         WHERE id = :id
      ',[
-        'id' => new \React\Cassandra\Type\UUID($uuid),
+        'id' => new \Tatikoma\React\Cassandra\Type\UUID($uuid),
      ]);
  })->then(function($response){
      print "Query successfull, got " . count($response->results) . " rows:\n";
@@ -45,7 +45,7 @@ Example usage (sync mode):
 ```php
  require_once 'vendor/autoload.php';
       
- $cluster = new \React\Cassandra\Cluster([
+ $cluster = new \Tatikoma\React\Cassandra\Cluster([
      ['host' => '127.0.0.1'],
      ['host' => '127.0.0.2'],
      ['host' => '127.0.0.3'],
@@ -58,7 +58,7 @@ Example usage (sync mode):
      FROM example
      WHERE id = :id
      ',[
-        'id' => new \React\Cassandra\Type\UUID($uuid),
+        'id' => new \Tatikoma\React\Cassandra\Type\UUID($uuid),
  ]);
  print "got " . count($response->results) . " rows:\n"; 
  foreach($response as $row){

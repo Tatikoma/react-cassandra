@@ -1,11 +1,11 @@
 <?php
 
-namespace React\Cassandra\Async;
+namespace Tatikoma\React\Cassandra\Async;
 
 class Cluster
 {
     /**
-     * @var \React\Cassandra\Async\Client[] List of configured clients in cluster
+     * @var \Tatikoma\React\Cassandra\Async\Client[] List of configured clients in cluster
      */
     public $clients = [];
     /**
@@ -13,7 +13,7 @@ class Cluster
      */
     public $loop = null;
     /**
-     * @var \React\Cassandra\Async\Client[] List of connected clients to cluster
+     * @var \Tatikoma\React\Cassandra\Async\Client[] List of connected clients to cluster
      */
     public $connected = [];
 
@@ -31,7 +31,7 @@ class Cluster
     {
         $this->loop = $loop;
         foreach ($serverOptions as $server) {
-            $client = new \React\Cassandra\Async\Client($loop, $server);
+            $client = new \Tatikoma\React\Cassandra\Async\Client($loop, $server);
             $this->clients[] = $client;
         }
     }
@@ -43,10 +43,10 @@ class Cluster
     public function connect($keyspace = '')
     {
         $this->keyspace = $keyspace;
-        $onConnect = function (\React\Cassandra\Async\Client $client) use (&$onConnect, &$onClose) {
+        $onConnect = function (\Tatikoma\React\Cassandra\Async\Client $client) use (&$onConnect, &$onClose) {
             $this->connected[] = $client;
         };
-        $onClose = function (\React\Cassandra\Async\Client $client) use (&$onConnect, &$onClose) {
+        $onClose = function (\Tatikoma\React\Cassandra\Async\Client $client) use (&$onConnect, &$onClose) {
             foreach ($this->connected as $k => $v) {
                 if ($v === $client) {
                     unset($this->connected[$k]);
@@ -55,7 +55,7 @@ class Cluster
             }
             $this->loop->addTimer($this->autoconnectInterval, function () use ($client, &$onConnect, &$onClose) {
                 if (!empty($this->keyspace)) {
-                    $client->connect()->then(function (\React\Cassandra\Async\Client $client) use ($onConnect, $onClose) {
+                    $client->connect()->then(function (\Tatikoma\React\Cassandra\Async\Client $client) use ($onConnect, $onClose) {
                         return $client->query('USE "' . $this->keyspace . '"')->then(function () use ($client, $onConnect) {
                             $onConnect($client);;
                         }, $onClose);
@@ -70,7 +70,7 @@ class Cluster
             $client->on('error', $onClose);
             $client->on('close', $onClose);
             if (!empty($this->keyspace)) {
-                $promise = $client->connect()->then(function (\React\Cassandra\Async\Client $client) use ($onConnect, $onClose) {
+                $promise = $client->connect()->then(function (\Tatikoma\React\Cassandra\Async\Client $client) use ($onConnect, $onClose) {
                     return $client->query('USE "' . $this->keyspace . '"')->then(function () use ($client, $onConnect) {
                         $onConnect($client);;
                     }, $onClose);
@@ -89,19 +89,19 @@ class Cluster
      * @param int $consistency
      * @return \React\Promise\Promise
      */
-    public function query($cql, $params = [], $consistency = \React\Cassandra\Constants::CONSISTENCY_ONE)
+    public function query($cql, $params = [], $consistency = \Tatikoma\React\Cassandra\Constants::CONSISTENCY_ONE)
     {
         return $this->getConnectedClient()->query($cql, $params, $consistency);
     }
 
     /**
-     * @return \React\Cassandra\Async\Client
-     * @throws \React\Cassandra\Exception
+     * @return \Tatikoma\React\Cassandra\Async\Client
+     * @throws \Tatikoma\React\Cassandra\Exception
      */
     public function getConnectedClient()
     {
         if (count($this->connected) == 0) {
-            throw new \React\Cassandra\Exception('No one server in cluster are connected');
+            throw new \Tatikoma\React\Cassandra\Exception('No one server in cluster are connected');
         }
         return $this->connected[mt_rand(0, count($this->connected) - 1)];
     }

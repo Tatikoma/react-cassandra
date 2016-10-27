@@ -1,5 +1,5 @@
 <?php
-namespace React\Cassandra\Type;
+namespace Tatikoma\React\Cassandra\Type;
 
 class UUID
 {

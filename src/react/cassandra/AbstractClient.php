@@ -1,5 +1,5 @@
 <?php
-namespace React\Cassandra;
+namespace Tatikoma\React\Cassandra;
 
 abstract class AbstractClient extends \Evenement\EventEmitter
 {
@@ -79,7 +79,7 @@ abstract class AbstractClient extends \Evenement\EventEmitter
     public function connect()
     {
         if ($this->status != Constants::CLIENT_CLOSED) {
-            throw new \React\Cassandra\Exception('Cannot connect client when connection is not closed');
+            throw new \Tatikoma\React\Cassandra\Exception('Cannot connect client when connection is not closed');
         }
 
         $this->deferredConnect = new \React\Promise\Deferred();
@@ -111,7 +111,7 @@ abstract class AbstractClient extends \Evenement\EventEmitter
 
     public function startup()
     {
-        $frame = new \React\Cassandra\Protocol\StartupFrame();
+        $frame = new \Tatikoma\React\Cassandra\Protocol\StartupFrame();
         $frame->fromParams();
         $frame->stream_id = $this->getNextStreamId();
         return $this->sendFrame($frame);
@@ -128,7 +128,7 @@ abstract class AbstractClient extends \Evenement\EventEmitter
         return $this->streamId++;
     }
 
-    public function sendFrame(\React\Cassandra\Protocol\AbstractFrame $frame)
+    public function sendFrame(\Tatikoma\React\Cassandra\Protocol\AbstractFrame $frame)
     {
         $this->deferredPackets[$frame->stream_id] = new \React\Promise\Deferred();
         $this->stream->write($frame->toBytes());
@@ -137,7 +137,7 @@ abstract class AbstractClient extends \Evenement\EventEmitter
 
     public function query($cql, $params = [], $consistency = Constants::CONSISTENCY_ONE)
     {
-        $frame = new \React\Cassandra\Protocol\QueryFrame();
+        $frame = new \Tatikoma\React\Cassandra\Protocol\QueryFrame();
         $frame->fromParams([
             'cql' => $cql,
             'consistency' => $consistency,
@@ -152,7 +152,7 @@ abstract class AbstractClient extends \Evenement\EventEmitter
         $this->buffer .= $readData;
         do {
             $frame = null;
-            $bytesParsed = \React\Cassandra\Protocol\AbstractFrame::parseBuffer($this->buffer, $frame);
+            $bytesParsed = \Tatikoma\React\Cassandra\Protocol\AbstractFrame::parseBuffer($this->buffer, $frame);
             if (!is_null($frame)) {
                 $this->onFrame($frame);
             }
@@ -162,10 +162,10 @@ abstract class AbstractClient extends \Evenement\EventEmitter
         } while ($bytesParsed > 0);
     }
 
-    public function onFrame(\React\Cassandra\Protocol\AbstractFrame $frame)
+    public function onFrame(\Tatikoma\React\Cassandra\Protocol\AbstractFrame $frame)
     {
         switch (true) {
-            case $frame instanceof \React\Cassandra\Protocol\ErrorFrame:
+            case $frame instanceof \Tatikoma\React\Cassandra\Protocol\ErrorFrame:
                 if (isset($this->deferredPackets[$frame->stream_id])) {
                     $this->deferredPackets[$frame->stream_id]->reject(new Exception(strtr('Error code :code, :error', [
                         ':code' => $frame->errorCode,
@@ -187,7 +187,7 @@ abstract class AbstractClient extends \Evenement\EventEmitter
                         break;
                 }
                 break;
-            case $frame instanceof \React\Cassandra\Protocol\ReadyFrame:
+            case $frame instanceof \Tatikoma\React\Cassandra\Protocol\ReadyFrame:
                 $this->status = Constants::CLIENT_CONNECTED;
                 if ($this->deferredConnect instanceof \React\Promise\Deferred) {
                     $this->deferredConnect->resolve($this);
@@ -236,7 +236,7 @@ abstract class AbstractClient extends \Evenement\EventEmitter
     public function onClose()
     {
         if ($this->status != Constants::CLIENT_CLOSING) {
-            throw new \React\Cassandra\Exception('Cassandra socket connection unexpectedly closed');
+            throw new \Tatikoma\React\Cassandra\Exception('Cassandra socket connection unexpectedly closed');
         }
         $this->stream = null;
         $this->status = Constants::CLIENT_CLOSED;

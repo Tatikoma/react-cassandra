@@ -1,8 +1,8 @@
 <?php
 
-namespace React\Cassandra\Async;
+namespace Tatikoma\React\Cassandra\Async;
 
-class Client extends \React\Cassandra\AbstractClient
+class Client extends \Tatikoma\React\Cassandra\AbstractClient
 {
     public function __construct(\React\EventLoop\LoopInterface $eventLoop, array $options)
     {

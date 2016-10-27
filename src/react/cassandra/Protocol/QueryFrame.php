@@ -1,5 +1,5 @@
 <?php
-namespace React\Cassandra\Protocol;
+namespace Tatikoma\React\Cassandra\Protocol;
 
 class QueryFrame extends AbstractFrame
 {
@@ -10,12 +10,12 @@ class QueryFrame extends AbstractFrame
 
     public function fromBytes($bytes = "")
     {
-        throw new \React\Cassandra\Exception('Not implemented yet');
+        throw new \Tatikoma\React\Cassandra\Exception('Not implemented yet');
     }
 
     public function fromParams($params = [])
     {
-        $this->opcode = \React\Cassandra\Constants::OPCODE_QUERY;
+        $this->opcode = \Tatikoma\React\Cassandra\Constants::OPCODE_QUERY;
 
         if (isset($params['cql'])) {
             $this->cql = $params['cql'];
@@ -30,7 +30,7 @@ class QueryFrame extends AbstractFrame
 
     public function toBytes()
     {
-        $flags = \React\Cassandra\Constants::QUERY_FLAG_VALUES | \React\Cassandra\Constants::QUERY_FLAG_WITH_NAMES_FOR_VALUES;
+        $flags = \Tatikoma\React\Cassandra\Constants::QUERY_FLAG_VALUES | \Tatikoma\React\Cassandra\Constants::QUERY_FLAG_WITH_NAMES_FOR_VALUES;
 
         $packet = FrameHelper::writeLongString($this->cql);
         $packet .= FrameHelper::writeShort($this->consistency);

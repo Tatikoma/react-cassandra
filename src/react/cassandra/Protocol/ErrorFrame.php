@@ -1,5 +1,5 @@
 <?php
-namespace React\Cassandra\Protocol;
+namespace Tatikoma\React\Cassandra\Protocol;
 
 class ErrorFrame extends AbstractFrame
 {

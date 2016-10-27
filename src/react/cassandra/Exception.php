@@ -1,6 +1,6 @@
 <?php
 
-namespace React\Cassandra;
+namespace Tatikoma\React\Cassandra;
 
 class Exception extends \Exception
 {

@@ -1,5 +1,5 @@
 <?php
-namespace React\Cassandra\Protocol;
+namespace Tatikoma\React\Cassandra\Protocol;
 
 class ResultFrame extends AbstractFrame implements \Iterator
 {
@@ -40,19 +40,19 @@ class ResultFrame extends AbstractFrame implements \Iterator
         $position = 0;
         $this->kind = $this->readInt($bytes, $position);
         switch ($this->kind) {
-            case \React\Cassandra\Constants::RESULT_VOID:
+            case \Tatikoma\React\Cassandra\Constants::RESULT_VOID:
                 break;
-            case \React\Cassandra\Constants::RESULT_ROWS:
+            case \Tatikoma\React\Cassandra\Constants::RESULT_ROWS:
                 $this->flags = $this->readInt($bytes, $position);
-                if (!$this->flags & \React\Cassandra\Constants::RESULT_FLAG_GLOBAL_TABLE_SPEC) {
+                if (!$this->flags & \Tatikoma\React\Cassandra\Constants::RESULT_FLAG_GLOBAL_TABLE_SPEC) {
                     // Flag is NOT set
-                    throw new \React\Cassandra\Exception('Not implemented yet');
+                    throw new \Tatikoma\React\Cassandra\Exception('Not implemented yet');
                 }
-                if ($this->flags & \React\Cassandra\Constants::RESULT_FLAG_HAS_MORE_PAGES) {
-                    throw new \React\Cassandra\Exception('Not implemented yet');
+                if ($this->flags & \Tatikoma\React\Cassandra\Constants::RESULT_FLAG_HAS_MORE_PAGES) {
+                    throw new \Tatikoma\React\Cassandra\Exception('Not implemented yet');
                 }
-                if ($this->flags & \React\Cassandra\Constants::RESULT_FLAG_NO_METADATA) {
-                    throw new \React\Cassandra\Exception('Not implemented yet');
+                if ($this->flags & \Tatikoma\React\Cassandra\Constants::RESULT_FLAG_NO_METADATA) {
+                    throw new \Tatikoma\React\Cassandra\Exception('Not implemented yet');
                 }
                 $columnsCount = $this->readInt($bytes, $position);
                 $keyspace = $this->readString($bytes, $position);;
@@ -63,7 +63,7 @@ class ResultFrame extends AbstractFrame implements \Iterator
                     $fieldType = $this->readShort($bytes, $position);
                     $subType = null;
                     switch ($fieldType) {
-                        case \React\Cassandra\Constants::FIELD_TYPE_LIST:
+                        case \Tatikoma\React\Cassandra\Constants::FIELD_TYPE_LIST:
                             $subType = $this->readShort($bytes, $position);
                             break;
                     }
@@ -80,34 +80,34 @@ class ResultFrame extends AbstractFrame implements \Iterator
                     for ($j = 0; $j < $columnsCount; $j++) {
                         $value = $this->readBytes($bytes, $position);
                         switch ($schema[$j]['type']) {
-                            case \React\Cassandra\Constants::FIELD_TYPE_CUSTOM:
-                            case \React\Cassandra\Constants::FIELD_TYPE_UUID:
-                                $value = \React\Cassandra\Type\UUID::parse($value);
+                            case \Tatikoma\React\Cassandra\Constants::FIELD_TYPE_CUSTOM:
+                            case \Tatikoma\React\Cassandra\Constants::FIELD_TYPE_UUID:
+                                $value = \Tatikoma\React\Cassandra\Type\UUID::parse($value);
                                 break;
-                            case \React\Cassandra\Constants::FIELD_TYPE_TIMESTAMP:
+                            case \Tatikoma\React\Cassandra\Constants::FIELD_TYPE_TIMESTAMP:
                                 // bigint
-                                $value = \React\Cassandra\Type\BigInt::parse($value);
+                                $value = \Tatikoma\React\Cassandra\Type\BigInt::parse($value);
                                 break;
-                            case \React\Cassandra\Constants::FIELD_TYPE_VARCHAR:
+                            case \Tatikoma\React\Cassandra\Constants::FIELD_TYPE_VARCHAR:
                                 // got empty string, so i cannot test it
                                 break;
-                            case \React\Cassandra\Constants::FIELD_TYPE_INT:
+                            case \Tatikoma\React\Cassandra\Constants::FIELD_TYPE_INT:
                                 $value = unpack('N', $value)[1];
                                 break;
-                            case \React\Cassandra\Constants::FIELD_TYPE_BLOB:
+                            case \Tatikoma\React\Cassandra\Constants::FIELD_TYPE_BLOB:
                                 // bigint again, wtf?
-                                $value = \React\Cassandra\Type\BigInt::parse($value);
+                                $value = \Tatikoma\React\Cassandra\Type\BigInt::parse($value);
                                 break;
-                            case \React\Cassandra\Constants::FIELD_TYPE_INET:
+                            case \Tatikoma\React\Cassandra\Constants::FIELD_TYPE_INET:
                                 if (strlen($value) != 4) {
-                                    throw new \React\Cassandra\Exception('Only inet v4 implemented yet');
+                                    throw new \Tatikoma\React\Cassandra\Exception('Only inet v4 implemented yet');
                                 }
-                                $value = \React\Cassandra\Type\Inet::parse($value);
+                                $value = \Tatikoma\React\Cassandra\Type\Inet::parse($value);
                                 break;
-                            case \React\Cassandra\Constants::FIELD_TYPE_LIST:
+                            case \Tatikoma\React\Cassandra\Constants::FIELD_TYPE_LIST:
                                 if ($value != "") {
                                     switch ($schema[$j]['subtype']) {
-                                        case \React\Cassandra\Constants::FIELD_TYPE_INT:
+                                        case \Tatikoma\React\Cassandra\Constants::FIELD_TYPE_INT:
                                             // @todo create & use \Type\Integer for parsing
                                             $result = [];
                                             $fieldPosition = 0;
@@ -119,35 +119,35 @@ class ResultFrame extends AbstractFrame implements \Iterator
                                             $value = $result;
                                             break;
                                         default:
-                                            throw new \React\Cassandra\Exception('Only integer field list implemented yet');
+                                            throw new \Tatikoma\React\Cassandra\Exception('Only integer field list implemented yet');
                                             break;
                                     }
                                 } else {
                                     $value = [];
                                 }
                                 break;
-                            case \React\Cassandra\Constants::FIELD_TYPE_ASCII:
-                            case \React\Cassandra\Constants::FIELD_TYPE_BOOLEAN:
-                            case \React\Cassandra\Constants::FIELD_TYPE_COUNTER:
-                            case \React\Cassandra\Constants::FIELD_TYPE_DECIMAL:
-                            case \React\Cassandra\Constants::FIELD_TYPE_DOUBLE:
-                            case \React\Cassandra\Constants::FIELD_TYPE_FLOAT:
-                            case \React\Cassandra\Constants::FIELD_TYPE_VARINT:
-                            case \React\Cassandra\Constants::FIELD_TYPE_TIMEUUID:
-                            case \React\Cassandra\Constants::FIELD_TYPE_DATE:
-                            case \React\Cassandra\Constants::FIELD_TYPE_TIME:
-                            case \React\Cassandra\Constants::FIELD_TYPE_SMALLINT:
-                            case \React\Cassandra\Constants::FIELD_TYPE_TINYINT:
-                            case \React\Cassandra\Constants::FIELD_TYPE_MAP:
-                            case \React\Cassandra\Constants::FIELD_TYPE_SET:
-                            case \React\Cassandra\Constants::FIELD_TYPE_UDT:
-                            case \React\Cassandra\Constants::FIELD_TYPE_TUPLE:
-                                throw new \React\Cassandra\Exception(strtr('Field type :type is not implemented yet', [
+                            case \Tatikoma\React\Cassandra\Constants::FIELD_TYPE_ASCII:
+                            case \Tatikoma\React\Cassandra\Constants::FIELD_TYPE_BOOLEAN:
+                            case \Tatikoma\React\Cassandra\Constants::FIELD_TYPE_COUNTER:
+                            case \Tatikoma\React\Cassandra\Constants::FIELD_TYPE_DECIMAL:
+                            case \Tatikoma\React\Cassandra\Constants::FIELD_TYPE_DOUBLE:
+                            case \Tatikoma\React\Cassandra\Constants::FIELD_TYPE_FLOAT:
+                            case \Tatikoma\React\Cassandra\Constants::FIELD_TYPE_VARINT:
+                            case \Tatikoma\React\Cassandra\Constants::FIELD_TYPE_TIMEUUID:
+                            case \Tatikoma\React\Cassandra\Constants::FIELD_TYPE_DATE:
+                            case \Tatikoma\React\Cassandra\Constants::FIELD_TYPE_TIME:
+                            case \Tatikoma\React\Cassandra\Constants::FIELD_TYPE_SMALLINT:
+                            case \Tatikoma\React\Cassandra\Constants::FIELD_TYPE_TINYINT:
+                            case \Tatikoma\React\Cassandra\Constants::FIELD_TYPE_MAP:
+                            case \Tatikoma\React\Cassandra\Constants::FIELD_TYPE_SET:
+                            case \Tatikoma\React\Cassandra\Constants::FIELD_TYPE_UDT:
+                            case \Tatikoma\React\Cassandra\Constants::FIELD_TYPE_TUPLE:
+                                throw new \Tatikoma\React\Cassandra\Exception(strtr('Field type :type is not implemented yet', [
                                     ':type' => $schema[$j]['type'],
                                 ]));
                                 break;
                             default:
-                                throw new \React\Cassandra\Exception(strtr('Got unknown field type :type', [
+                                throw new \Tatikoma\React\Cassandra\Exception(strtr('Got unknown field type :type', [
                                     ':type' => $schema[$j]['type'],
                                 ]));
                                 break;
@@ -157,13 +157,13 @@ class ResultFrame extends AbstractFrame implements \Iterator
                 }
 
                 break;
-            case \React\Cassandra\Constants::RESULT_SET_KEYSPACE:
+            case \Tatikoma\React\Cassandra\Constants::RESULT_SET_KEYSPACE:
                 $this->keyspace = $this->readString($bytes, $position);
                 break;
-            case \React\Cassandra\Constants::RESULT_PREPARED:
-                throw new \React\Cassandra\Exception('Not implemented yet');
+            case \Tatikoma\React\Cassandra\Constants::RESULT_PREPARED:
+                throw new \Tatikoma\React\Cassandra\Exception('Not implemented yet');
                 break;
-            case \React\Cassandra\Constants::RESULT_SCHEMA_CHANGE:
+            case \Tatikoma\React\Cassandra\Constants::RESULT_SCHEMA_CHANGE:
                 $this->change_type = $this->readString($bytes, $position);
                 $this->change_target = $this->readString($bytes, $position);
                 switch ($this->change_target) {
@@ -197,12 +197,12 @@ class ResultFrame extends AbstractFrame implements \Iterator
                         }
                         break;
                     default:
-                        throw new \React\Cassandra\Exception('Not implemented yet');
+                        throw new \Tatikoma\React\Cassandra\Exception('Not implemented yet');
                         break;
                 }
                 break;
             default:
-                throw new \React\Cassandra\Exception(strtr('Got unknown result kind :kind', [
+                throw new \Tatikoma\React\Cassandra\Exception(strtr('Got unknown result kind :kind', [
                     ':kind' => $this->kind,
                 ]));
                 break;

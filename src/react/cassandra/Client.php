@@ -1,5 +1,5 @@
 <?php
-namespace React\Cassandra;
+namespace Tatikoma\React\Cassandra;
 
 class Client extends AbstractClient
 {

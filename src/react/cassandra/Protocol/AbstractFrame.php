@@ -1,6 +1,6 @@
 <?php
 
-namespace React\Cassandra\Protocol;
+namespace Tatikoma\React\Cassandra\Protocol;
 
 abstract class AbstractFrame
 {
@@ -33,87 +33,87 @@ abstract class AbstractFrame
 
     public static function parseBuffer($buffer, &$frame)
     {
-        if (strlen($buffer) < \React\Cassandra\Constants::FRAME_SIZE_MIN) {
+        if (strlen($buffer) < \Tatikoma\React\Cassandra\Constants::FRAME_SIZE_MIN) {
             return 0;
         }
-        $header = unpack('Cversion/Cflags/nstream/Copcode/Nlength', substr($buffer, 0, \React\Cassandra\Constants::FRAME_SIZE_MIN));
-        if (strlen($buffer) < $header['length'] + \React\Cassandra\Constants::FRAME_SIZE_MIN) {
+        $header = unpack('Cversion/Cflags/nstream/Copcode/Nlength', substr($buffer, 0, \Tatikoma\React\Cassandra\Constants::FRAME_SIZE_MIN));
+        if (strlen($buffer) < $header['length'] + \Tatikoma\React\Cassandra\Constants::FRAME_SIZE_MIN) {
             return 0;
         }
 
-        if ($header['flags'] & \React\Cassandra\Constants::FRAME_FLAG_COMPRESSION) {
-            throw new \React\Cassandra\Exception('Compression flag not implemented yet');
+        if ($header['flags'] & \Tatikoma\React\Cassandra\Constants::FRAME_FLAG_COMPRESSION) {
+            throw new \Tatikoma\React\Cassandra\Exception('Compression flag not implemented yet');
         }
-        if ($header['flags'] & \React\Cassandra\Constants::FRAME_FLAG_TRACING) {
-            throw new \React\Cassandra\Exception('Tracing flag not implemented yet');
+        if ($header['flags'] & \Tatikoma\React\Cassandra\Constants::FRAME_FLAG_TRACING) {
+            throw new \Tatikoma\React\Cassandra\Exception('Tracing flag not implemented yet');
         }
-        if ($header['flags'] & \React\Cassandra\Constants::FRAME_FLAG_PAYLOAD) {
-            throw new \React\Cassandra\Exception('Payload flag not implemented yet');
+        if ($header['flags'] & \Tatikoma\React\Cassandra\Constants::FRAME_FLAG_PAYLOAD) {
+            throw new \Tatikoma\React\Cassandra\Exception('Payload flag not implemented yet');
         }
-        if ($header['flags'] & \React\Cassandra\Constants::FRAME_FLAG_WARNING) {
-            throw new \React\Cassandra\Exception('Warning flag not implemented yet');
+        if ($header['flags'] & \Tatikoma\React\Cassandra\Constants::FRAME_FLAG_WARNING) {
+            throw new \Tatikoma\React\Cassandra\Exception('Warning flag not implemented yet');
         }
-        if ($header['length'] > \React\Cassandra\Constants::FRAME_SIZE_LIMIT) {
-            throw new \React\Cassandra\Exception(strtr('Got too large frame. Frame size :actual, maximum size is :expected', [
+        if ($header['length'] > \Tatikoma\React\Cassandra\Constants::FRAME_SIZE_LIMIT) {
+            throw new \Tatikoma\React\Cassandra\Exception(strtr('Got too large frame. Frame size :actual, maximum size is :expected', [
                 ':actual' => $header['length'],
-                ':expected' => \React\Cassandra\Constants::FRAME_SIZE_LIMIT,
+                ':expected' => \Tatikoma\React\Cassandra\Constants::FRAME_SIZE_LIMIT,
             ]));
         }
 
 
-        $payload = substr($buffer, \React\Cassandra\Constants::FRAME_SIZE_MIN, $header['length']);
+        $payload = substr($buffer, \Tatikoma\React\Cassandra\Constants::FRAME_SIZE_MIN, $header['length']);
         switch ($header['opcode']) {
-            case \React\Cassandra\Constants::OPCODE_ERROR:
+            case \Tatikoma\React\Cassandra\Constants::OPCODE_ERROR:
                 $frame = new ErrorFrame;
                 break;
-            case \React\Cassandra\Constants::OPCODE_STARTUP:
+            case \Tatikoma\React\Cassandra\Constants::OPCODE_STARTUP:
                 $frame = new StartupFrame;
                 break;
-            case \React\Cassandra\Constants::OPCODE_READY:
+            case \Tatikoma\React\Cassandra\Constants::OPCODE_READY:
                 $frame = new ReadyFrame;
                 break;
-            case \React\Cassandra\Constants::OPCODE_AUTHENTICATE:
+            case \Tatikoma\React\Cassandra\Constants::OPCODE_AUTHENTICATE:
                 $frame = new AuthenticateFrame;
                 break;
-            case \React\Cassandra\Constants::OPCODE_OPTIONS:
+            case \Tatikoma\React\Cassandra\Constants::OPCODE_OPTIONS:
                 $frame = new OptionsFrame;
                 break;
-            case \React\Cassandra\Constants::OPCODE_SUPPORTED:
+            case \Tatikoma\React\Cassandra\Constants::OPCODE_SUPPORTED:
                 $frame = new SupportedFrame;
                 break;
-            case \React\Cassandra\Constants::OPCODE_QUERY:
+            case \Tatikoma\React\Cassandra\Constants::OPCODE_QUERY:
                 $frame = new QueryFrame;
                 break;
-            case \React\Cassandra\Constants::OPCODE_RESULT:
+            case \Tatikoma\React\Cassandra\Constants::OPCODE_RESULT:
                 $frame = new ResultFrame;
                 break;
-            case \React\Cassandra\Constants::OPCODE_PREPARE:
+            case \Tatikoma\React\Cassandra\Constants::OPCODE_PREPARE:
                 $frame = new PrepareFrame;
                 break;
-            case \React\Cassandra\Constants::OPCODE_EXECUTE:
+            case \Tatikoma\React\Cassandra\Constants::OPCODE_EXECUTE:
                 $frame = new ExecuteFrame;
                 break;
-            case \React\Cassandra\Constants::OPCODE_REGISTER:
+            case \Tatikoma\React\Cassandra\Constants::OPCODE_REGISTER:
                 $frame = new RegisterFrame;
                 break;
-            case \React\Cassandra\Constants::OPCODE_EVENT:
+            case \Tatikoma\React\Cassandra\Constants::OPCODE_EVENT:
                 $frame = new EventFrame;
                 break;
-            case \React\Cassandra\Constants::OPCODE_BATCH:
+            case \Tatikoma\React\Cassandra\Constants::OPCODE_BATCH:
                 $frame = new BatchFrame;
                 break;
-            case \React\Cassandra\Constants::OPCODE_AUTH_CHALLENGE:
+            case \Tatikoma\React\Cassandra\Constants::OPCODE_AUTH_CHALLENGE:
                 $frame = new AuthChallengeFrame;
                 break;
-            case \React\Cassandra\Constants::OPCODE_AUTH_RESPONSE:
+            case \Tatikoma\React\Cassandra\Constants::OPCODE_AUTH_RESPONSE:
                 $frame = new AuthResponseFrame;
                 break;
-            case \React\Cassandra\Constants::OPCODE_AUTH_SUCCESS:
+            case \Tatikoma\React\Cassandra\Constants::OPCODE_AUTH_SUCCESS:
                 $frame = new AuthSuccessFrame;
                 break;
 
             default:
-                throw new \React\Cassandra\Exception(strtr('Got unknown frame opcode: :opcode', [
+                throw new \Tatikoma\React\Cassandra\Exception(strtr('Got unknown frame opcode: :opcode', [
                     ':opcode' => $header['opcode'],
                 ]));
                 break;
@@ -128,7 +128,7 @@ abstract class AbstractFrame
 
         $frame->fromBytes($payload);
 
-        return \React\Cassandra\Constants::FRAME_SIZE_MIN + $header['length'];
+        return \Tatikoma\React\Cassandra\Constants::FRAME_SIZE_MIN + $header['length'];
     }
 
     public function fromParams($params)
@@ -144,12 +144,12 @@ abstract class AbstractFrame
     /**
      * @param string $frame Binary frame without frame header
      * @return string Binary frame with frame header
-     * @throws \React\Cassandra\Exception
+     * @throws \Tatikoma\React\Cassandra\Exception
      */
     public function writeHeader($frame = '')
     {
         if (is_null($this->stream_id)) {
-            throw new \React\Cassandra\Exception('Cannot write frame header for frame without stream id');
+            throw new \Tatikoma\React\Cassandra\Exception('Cannot write frame header for frame without stream id');
         }
         $frame = pack('CCnCN',
                 $this->frame_direction | $this->protocol_version,
@@ -198,10 +198,10 @@ abstract class AbstractFrame
 
     /**
      * @return string
-     * @throws \React\Cassandra\Exception
+     * @throws \Tatikoma\React\Cassandra\Exception
      */
     public function toBytes()
     {
-        throw new \React\Cassandra\Exception('Cannot call toBytes method of Abstract Frame');
+        throw new \Tatikoma\React\Cassandra\Exception('Cannot call toBytes method of Abstract Frame');
     }
 }

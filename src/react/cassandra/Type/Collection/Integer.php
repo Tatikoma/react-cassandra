@@ -1,7 +1,7 @@
 <?php
-namespace React\Cassandra\Type\Collection;
+namespace Tatikoma\React\Cassandra\Type\Collection;
 
-class Integer extends \React\Cassandra\Type\Collection
+class Integer extends \Tatikoma\React\Cassandra\Type\Collection
 {
     public $value = [];
 

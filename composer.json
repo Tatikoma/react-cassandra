@@ -27,7 +27,7 @@
     },
     "autoload": {
         "psr-4": {
-            "React\\Cassandra\\": [
+            "Tatikoma\\React\\Cassandra\\": [
                 "src/react/cassandra/"
             ]
         },

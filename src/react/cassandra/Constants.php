@@ -289,4 +289,10 @@ final class Constants
     const FIELD_TYPE_SET = 0x0022;
     const FIELD_TYPE_UDT = 0x0030;
     const FIELD_TYPE_TUPLE = 0x0031;
+
+    // i wasnt found complete error code list
+    /**
+     * Operation timed out - received only 0 responses.
+     */
+    const ERROR_OPERATION_TIMED_OUT = 0x1200;
 }

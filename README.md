@@ -35,6 +35,8 @@ Example usage (async mode):
      foreach($response as $row){
         var_dump($row);
      }
+ }, function(\Tatikoma\React\Cassandra\Protocol\ErrorFrame $reason){
+     print "Query failed: " . $reason->errorString . "\n";
  });
  
  $loop->run();

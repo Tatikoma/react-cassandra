@@ -167,18 +167,12 @@ abstract class AbstractClient extends \Evenement\EventEmitter
         switch (true) {
             case $frame instanceof \Tatikoma\React\Cassandra\Protocol\ErrorFrame:
                 if (isset($this->deferredPackets[$frame->stream_id])) {
-                    $this->deferredPackets[$frame->stream_id]->reject(new Exception(strtr('Error code :code, :error', [
-                        ':code' => $frame->errorCode,
-                        ':error' => $frame->errorString,
-                    ])));
+                    $this->deferredPackets[$frame->stream_id]->reject($frame);
                     unset($this->deferredPackets[$frame->stream_id]);
                 }
                 switch ($this->status) {
                     case Constants::CLIENT_CONNECTING:
                         $this->status = Constants::CLIENT_CONNECTED;
-                        $this->close();
-                        break;
-                    case Constants::CLIENT_CONNECTED:
                         $this->close();
                         break;
                     case Constants::CLIENT_CLOSING:

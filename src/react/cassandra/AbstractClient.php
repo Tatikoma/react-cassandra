@@ -217,6 +217,15 @@ abstract class AbstractClient extends \Evenement\EventEmitter
         }
     }
 
+    /**
+     * Check whether client is connected to Cassandra server
+     * @return bool true if client connected, otherwise false
+     */
+    public function isConnected()
+    {
+        return $this->status == Constants::CLIENT_CONNECTED;
+    }
+
     public function onError($e = null)
     {
         if ($e instanceof \Exception) {

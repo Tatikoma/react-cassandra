@@ -106,6 +106,15 @@ class Cluster
         return $this->connected[mt_rand(0, count($this->connected) - 1)];
     }
 
+    /**
+     * Check whether at least one client in cluster is connected to Cassandra server
+     * @return bool true if at least one client connected, otherwise false
+     */
+    public function isConnected()
+    {
+        return count($this->connected) > 0;
+    }
+
     public function __destruct()
     {
         $this->close();

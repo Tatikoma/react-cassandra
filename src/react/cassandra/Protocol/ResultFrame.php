@@ -129,6 +129,39 @@ class ResultFrame extends AbstractFrame implements \Iterator
                                     $value = [];
                                 }
                                 break;
+                            case \Tatikoma\React\Cassandra\Constants::FIELD_TYPE_SET:
+                                if ($value != "") {
+                                    switch ($schema[$j]['subtype']) {
+                                        case \Tatikoma\React\Cassandra\Constants::FIELD_TYPE_INT:
+                                            // @todo create & use \Type\Integer for parsing
+                                            $result = [];
+                                            $fieldPosition = 0;
+                                            $numberOfElements = $this->readInt($value, $fieldPosition);
+                                            for ($elementNum = 0; $elementNum < $numberOfElements; $elementNum++) {
+                                                $item = unpack('Nint', $this->readBytes($value, $fieldPosition));
+                                                $result[] = $item['int'];
+                                            }
+                                            $value = $result;
+                                            break;
+                                        case \Tatikoma\React\Cassandra\Constants::FIELD_TYPE_UUID:
+                                            $result = [];
+                                            $fieldPosition = 0;
+                                            $numberOfElements = $this->readInt($value, $fieldPosition);
+                                            for ($elementNum = 0; $elementNum < $numberOfElements; $elementNum++) {
+                                                $item = $this->readBytes($value, $fieldPosition);
+                                                $item = \Tatikoma\React\Cassandra\Type\UUID::parse($item);
+                                                $result[] = $item;
+                                            }
+                                            $value = $result;
+                                            break;
+                                        default:
+                                            throw new \Tatikoma\React\Cassandra\Exception('Only integer field list implemented yet');
+                                            break;
+                                    }
+                                } else {
+                                    $value = [];
+                                }
+                                break;
                             case \Tatikoma\React\Cassandra\Constants::FIELD_TYPE_ASCII:
                             case \Tatikoma\React\Cassandra\Constants::FIELD_TYPE_BOOLEAN:
                             case \Tatikoma\React\Cassandra\Constants::FIELD_TYPE_COUNTER:
@@ -142,7 +175,6 @@ class ResultFrame extends AbstractFrame implements \Iterator
                             case \Tatikoma\React\Cassandra\Constants::FIELD_TYPE_SMALLINT:
                             case \Tatikoma\React\Cassandra\Constants::FIELD_TYPE_TINYINT:
                             case \Tatikoma\React\Cassandra\Constants::FIELD_TYPE_MAP:
-                            case \Tatikoma\React\Cassandra\Constants::FIELD_TYPE_SET:
                             case \Tatikoma\React\Cassandra\Constants::FIELD_TYPE_UDT:
                             case \Tatikoma\React\Cassandra\Constants::FIELD_TYPE_TUPLE:
                                 throw new \Tatikoma\React\Cassandra\Exception(strtr('Field type :type is not implemented yet', [

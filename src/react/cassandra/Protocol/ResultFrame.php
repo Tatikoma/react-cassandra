@@ -93,7 +93,9 @@ class ResultFrame extends AbstractFrame implements \Iterator
                                 // got empty string, so i cannot test it
                                 break;
                             case \Tatikoma\React\Cassandra\Constants::FIELD_TYPE_INT:
-                                $value = unpack('N', $value)[1];
+                                if ($value !== null) {
+                                    $value = unpack('N', $value)[1];
+                                }
                                 break;
                             case \Tatikoma\React\Cassandra\Constants::FIELD_TYPE_BLOB:
                                 // bigint again, wtf?

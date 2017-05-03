@@ -64,6 +64,7 @@ class ResultFrame extends AbstractFrame implements \Iterator
                     $subType = null;
                     switch ($fieldType) {
                         case \Tatikoma\React\Cassandra\Constants::FIELD_TYPE_LIST:
+                        case \Tatikoma\React\Cassandra\Constants::FIELD_TYPE_SET:
                             $subType = $this->readShort($bytes, $position);
                             break;
                     }

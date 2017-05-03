@@ -102,10 +102,12 @@ class ResultFrame extends AbstractFrame implements \Iterator
                                 $value = \Tatikoma\React\Cassandra\Type\BigInt::parse($value);
                                 break;
                             case \Tatikoma\React\Cassandra\Constants::FIELD_TYPE_INET:
-                                if (strlen($value) != 4) {
-                                    throw new \Tatikoma\React\Cassandra\Exception('Only inet v4 implemented yet');
+                                if ($value !== null) {
+                                    if (strlen($value) != 4) {
+                                        throw new \Tatikoma\React\Cassandra\Exception('Only inet v4 implemented yet');
+                                    }
+                                    $value = \Tatikoma\React\Cassandra\Type\Inet::parse($value);
                                 }
-                                $value = \Tatikoma\React\Cassandra\Type\Inet::parse($value);
                                 break;
                             case \Tatikoma\React\Cassandra\Constants::FIELD_TYPE_LIST:
                                 if ($value != "") {

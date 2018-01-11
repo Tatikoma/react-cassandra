@@ -164,8 +164,6 @@ class ResultFrame extends AbstractFrame implements \Iterator
                                                 $result[] = $this->readBytes($value, $fieldPosition);
                                             }
                                             $value = $result;
-                                            var_dump($value);
-                                            exit;
                                             break;
                                         default:
                                             throw new \Tatikoma\React\Cassandra\Exception('Only integer field list implemented yet');
